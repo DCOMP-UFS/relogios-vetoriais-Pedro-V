@@ -42,7 +42,7 @@ void Receive(int origem, Clock *clock){
    int mensagem;
    MPI_Recv(&mensagem, 1,  MPI_INT, origem, origem, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
    clock->p[origem] = mensagem;
- Event(pid_recebido, clock);
+
 }
 
 
