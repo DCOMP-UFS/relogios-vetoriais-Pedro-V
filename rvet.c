@@ -35,11 +35,11 @@ void Send(int origem, int destino, Clock *clock){
    mensagem = malloc (3 * sizeof(int));
    
    for (int i = 0; i < 3; i++) {
-      if (i != destino) {
          mensagem[i] = clock->p[i];
-      }
    }
    MPI_Send(mensagem, 3, MPI_INT, destino, origem, MPI_COMM_WORLD);
+   
+   free(mensagem);
 }
 
 
@@ -51,11 +51,13 @@ void Receive(int origem, int destino, Clock *clock){
    mensagem = malloc (3 * sizeof(int));
    
    MPI_Recv(mensagem, 3,  MPI_INT, origem, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-   for (int i = 0; i < 3; i++) {
-      if (i != destino && mensagem[i] > clock->p[i]) {
+   for (int i = 0; i < 3; i++) { 
+      if ( mensagem[i] > clock->p[i]) {
          clock->p[i] = mensagem[i];
       }
    }
+   
+   free(mensagem);
 }
 
 
