@@ -32,7 +32,7 @@ void Event(int pid, Clock *clock){
 void Send(int origem, int destino, Clock *clock){
    // TO DO
    int * mensagem;
-   mensagem = malloc (3 * sizeof(int));
+   mensagem = calloc (3, sizeof(int));
    
    for (int i = 0; i < 3; i++) {
          mensagem[i] = clock->p[i];
@@ -48,7 +48,7 @@ void Send(int origem, int destino, Clock *clock){
 void Receive(int origem, int destino, Clock *clock){
    // TO DO
    int * mensagem;
-   mensagem = malloc (3 * sizeof(int));
+   mensagem = calloc (3, sizeof(int));
    
    MPI_Recv(mensagem, 3,  MPI_INT, origem, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
    for (int i = 0; i < 3; i++) { 
