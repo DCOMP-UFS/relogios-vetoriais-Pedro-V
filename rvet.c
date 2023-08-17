@@ -11,7 +11,8 @@
  
 #include <stdio.h>
 #include <string.h>  
-#include <mpi.h>     
+#include <mpi.h>   
+#include <stdlib.h>
 
 
 typedef struct Clock { 
@@ -30,19 +31,31 @@ void Event(int pid, Clock *clock){
 
 void Send(int origem, int destino, Clock *clock){
    // TO DO
-   int mensagem = clock->p[origem];
-   MPI_Send(&mensagem, 1, MPI_INT, destino, origem, MPI_COMM_WORLD);
+   int * mensagem;
+   mensagem = malloc (3 * sizeof(int));
+   
+   for (int i = 0; i < 3; i++) {
+      if (i != destino) {
+         mensagem[i] = clock->p[i];
+      }
+   }
+   MPI_Send(mensagem, 3, MPI_INT, destino, origem, MPI_COMM_WORLD);
 }
 
 
 
 
-void Receive(int origem, Clock *clock){
+void Receive(int origem, int destino, Clock *clock){
    // TO DO
-   int mensagem;
-   MPI_Recv(&mensagem, 1,  MPI_INT, origem, origem, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-   clock->p[origem] = mensagem;
-
+   int * mensagem;
+   mensagem = malloc (3 * sizeof(int));
+   
+   MPI_Recv(mensagem, 3,  MPI_INT, origem, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+   for (int i = 0; i < 3; i++) {
+      if (i != destino && mensagem[i] > clock->p[i]) {
+         clock->p[i] = mensagem[i];
+      }
+   }
 }
 
 
@@ -59,7 +72,7 @@ void process0(){
    printClock(&clock, 0);
    
    Event(0, &clock);
-   Receive(1, &clock);
+   Receive(1, 0, &clock);
    printClock(&clock, 0);
    
    Event(0, &clock);
@@ -67,7 +80,7 @@ void process0(){
    printClock(&clock, 0);
    
    Event(0, &clock);
-   Receive(2, &clock);
+   Receive(2, 0,  &clock);
    printClock(&clock, 0);
    
    Event(0, &clock);
@@ -88,11 +101,11 @@ void process1(){
    printClock(&clock, 1);
 
    Event(1, &clock);
-   Receive(0, &clock);
+   Receive(0, 1, &clock);
    printClock(&clock, 1);
    
    Event(1, &clock);
-   Receive(0, &clock);
+   Receive(0, 1, &clock);
    printClock(&clock, 1);
    
    
@@ -111,7 +124,7 @@ void process2(){
    printClock(&clock, 2);
    
    Event(2, &clock);
-   Receive(0, &clock);
+   Receive(0, 2, &clock);
    printClock(&clock, 2);   
 }
 
