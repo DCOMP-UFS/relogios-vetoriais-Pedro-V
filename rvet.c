@@ -30,8 +30,8 @@ void Event(int pid, Clock *clock){
 
 void Send(int origem, int destino, Clock *clock){
    // TO DO
-   int pid_enviado = clock->p[origem];
-   MPI_Send(&pid_enviado, 1, MPI_INT, destino, origem, MPI_COMM_WORLD);
+   int mensagem = clock->p[origem];
+   MPI_Send(&mensagem, 1, MPI_INT, destino, origem, MPI_COMM_WORLD);
 }
 
 
@@ -39,9 +39,10 @@ void Send(int origem, int destino, Clock *clock){
 
 void Receive(int origem, Clock *clock){
    // TO DO
-   int pid_recebido;
-   MPI_Recv(&pid_recebido, 1,  MPI_INT, origem, origem, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-   Event(pid_recebido, clock);
+   int mensagem;
+   MPI_Recv(&mensagem, 1,  MPI_INT, origem, origem, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+   clock->p[origem] = mensagem;
+ Event(pid_recebido, clock);
 }
 
 
