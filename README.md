@@ -3,6 +3,7 @@
 Base para a implementação de relógios vetoriais em C
 
 Integrantes do grupo:
+
 Carlos Eduardo Santana Nascimento
 
 Max Antônio Lima Barreto
