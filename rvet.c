@@ -5,8 +5,8 @@
  * 
  * https://people.cs.rutgers.edu/~pxk/417/notes/images/clocks-vector.png
  * 
- * Compilação: mpicc -o rvet rvet.c
- * Execução:   mpiexec -n 3 ./rvet
+ * Compilação: mpicc -o parte1 parte1.c
+ * Execução:   mpiexec -n 3 ./parte1
  */
  
 #include <stdio.h>
@@ -31,6 +31,7 @@ void Event(int pid, Clock *clock){
 
 void Send(int origem, int destino, Clock *clock){
    // TO DO
+   clock->p[origem]++;  //atualiza o clock
    int * mensagem;
    mensagem = calloc (3, sizeof(int));
    
@@ -47,6 +48,7 @@ void Send(int origem, int destino, Clock *clock){
 
 void Receive(int origem, int destino, Clock *clock){
    // TO DO
+   clock->p[destino]++;  //atualiza o clock
    int * mensagem;
    mensagem = calloc (3, sizeof(int));
    
@@ -69,23 +71,22 @@ void process0(){
    Event(0, &clock);
    printClock(&clock, 0);
    
-   Event(0, &clock);
+
    Send(0, 1, &clock);
    printClock(&clock, 0);
-   
-   Event(0, &clock);
+
    Receive(1, 0, &clock);
    printClock(&clock, 0);
    
-   Event(0, &clock);
+
    Send(0, 2, &clock);
    printClock(&clock, 0);
    
-   Event(0, &clock);
+
    Receive(2, 0,  &clock);
    printClock(&clock, 0);
    
-   Event(0, &clock);
+
    Send(0, 1, &clock);
    printClock(&clock, 0);
    
@@ -98,15 +99,15 @@ void process0(){
 void process1(){
    Clock clock = {{0,0,0}};
 
-   Event(1, &clock);
+
    Send(1, 0, &clock);
    printClock(&clock, 1);
 
-   Event(1, &clock);
+
    Receive(0, 1, &clock);
    printClock(&clock, 1);
    
-   Event(1, &clock);
+
    Receive(0, 1, &clock);
    printClock(&clock, 1);
    
@@ -121,11 +122,11 @@ void process2(){
    Event(2, &clock);
    printClock(&clock, 2);
    
-   Event(2, &clock);
+
    Send(2, 0, &clock);
    printClock(&clock, 2);
    
-   Event(2, &clock);
+
    Receive(0, 2, &clock);
    printClock(&clock, 2);   
 }
